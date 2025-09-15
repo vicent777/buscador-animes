@@ -22,19 +22,6 @@ Um webapp para buscar animes usando a [Jikan API](https://jikan.moe/), com filtr
 
 ---
 
-## 🛠️ Estrutura do Projeto
-
-WebApp/
-│
-├── index.html # Estrutura principal
-├── style.css # Estilos do app
-├── script.js # Lógica de busca, filtros e modal
-├── fonts/ # Fonte Death Note personalizada
-│ └── Death Note.ttf
-└── assets/ # Imagens e ícones (logo, etc)
-
----
-
 ## 🚀 Como Executar
 
 1. Clone ou baixe este repositório.
