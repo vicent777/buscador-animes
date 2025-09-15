@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buscador de Animes</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header>
+    <h1>
+      <img src="assets/icon1.png" alt="Logo" class="header-icon" />
+      Buscador de Animes
+    </h1>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Digite o nome do anime..." />
+      <span class="search-icon">🔍</span>
+    </div>
+    <div id="filterContainer" class="filter-container hidden"></div>
+  </header>
+
+  <main>
+    <div id="loader" class="loader hidden"></div>
+    <div id="results" class="results"></div>
+    <p id="noResults" class="hidden">Nenhum resultado encontrado.</p>
+  </main>
+
+  <footer>
+    <p>Dados do <a href="https://jikan.moe/" target="_blank">Jikan API</a></p>
+    <p>Desenvolvido por Vinicius Nascimento</p>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modal-img" />
+    <div id="caption"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
