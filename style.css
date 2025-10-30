@@ -32,10 +32,10 @@ header h1 {
 }
 
 .header-icon {
-  width: 40px;       /* ajusta o tamanho */
+  width: 40px;
   height: auto;
-  vertical-align: middle; /* alinha com o texto */
-  margin-right: 10px;     /* espaço entre ícone e texto */
+  vertical-align: middle;
+  margin-right: 10px;
 }
 
 .search-container {
@@ -47,7 +47,7 @@ header h1 {
 
 #searchInput {
   width: 100%;
-  padding: 10px 40px 10px 12px;
+  padding: 10px 80px 10px 12px; /* espaço para botões */
   border-radius: 25px;
   border: 1px solid #ccc;
   font-size: 16px;
@@ -60,6 +60,21 @@ header h1 {
   transform: translateY(-50%);
   cursor: pointer;
   font-size: 18px;
+  background: none;
+  border: none;
+  color: #fff;
+}
+
+#mic {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: #fff;
 }
 
 .filter-container {
@@ -107,7 +122,6 @@ main {
   gap: 1rem;
   align-items: center;
   transition: transform 0.2s ease-in-out;
-
   font-family: 'Arial', sans-serif;
 }
 
@@ -216,12 +230,11 @@ footer a {
   #searchInput {
     max-width: 90%;
     font-size: 14px;
-    padding: 8px 36px 8px 10px;
+    padding: 8px 80px 8px 10px;
   }
 
-  .search-icon {
+  .search-icon, #mic {
     font-size: 16px;
-    right: 10px;
   }
 
   .results {
@@ -263,12 +276,11 @@ footer a {
   #searchInput {
     max-width: 80%;
     font-size: 15px;
-    padding: 9px 38px 9px 12px;
+    padding: 9px 80px 9px 12px;
   }
 
-  .search-icon {
+  .search-icon, #mic {
     font-size: 17px;
-    right: 12px;
   }
 
   .results {
@@ -304,12 +316,11 @@ footer a {
   #searchInput {
     max-width: 400px;
     font-size: 16px;
-    padding: 10px 40px 10px 12px;
+    padding: 10px 80px 10px 12px;
   }
 
-  .search-icon {
+  .search-icon, #mic {
     font-size: 18px;
-    right: 12px;
   }
 
   .results {
@@ -334,4 +345,26 @@ footer a {
     width: 350px;
     max-height: 50vh;
   }
+}
+
+/* Botão de instalação PWA */
+#installBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  background: #ff005c;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.2s, background 0.2s;
+}
+
+#installBtn:hover {
+  transform: scale(1.05);
+  background: #e60050;
 }

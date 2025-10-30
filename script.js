@@ -4,17 +4,20 @@ const loader = document.getElementById("loader");
 const noResults = document.getElementById("noResults");
 const filterContainer = document.getElementById("filterContainer");
 const searchIcon = document.querySelector(".search-icon");
+const micBtn = document.getElementById("mic");
+const installBtn = document.getElementById("installBtn");
 
 let currentResults = [];
 let activeFilters = new Set();
+let deferredPrompt = null;
 
-// Modal
+// ---------- MODAL ----------
 const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modal-img");
 const caption = document.getElementById("caption");
 const closeModal = document.querySelector(".close");
 
-// Buscar animes
+// ---------- BUSCAR ANIMES ----------
 async function fetchAnime(query) {
   results.innerHTML = "";
   filterContainer.innerHTML = "";
@@ -37,6 +40,10 @@ async function fetchAnime(query) {
     currentResults = data.data;
     displayResults(currentResults);
     createTypeFilters(currentResults);
+
+    // 🔔 Notificação persistente sempre que houver resultados
+    showPersistentNotification(`Encontrados ${currentResults.length} animes!`, "Confira os resultados da sua busca!");
+
   } catch (error) {
     loader.classList.add("hidden");
     noResults.classList.remove("hidden");
@@ -45,7 +52,7 @@ async function fetchAnime(query) {
   }
 }
 
-// filtros
+// ---------- EXIBIÇÃO DE RESULTADOS ----------
 function displayResults(animeList) {
   results.innerHTML = "";
   let filtered = animeList;
@@ -85,7 +92,7 @@ function displayResults(animeList) {
   });
 }
 
-// Criar filtros
+// ---------- CRIAR FILTROS ----------
 function createTypeFilters(animeList) {
   const allowedTypes = ["TV", "Movie", "OVA"];
   const types = [...new Set(animeList.map(a => a.type).filter(t => allowedTypes.includes(t)))];
@@ -115,7 +122,7 @@ function createTypeFilters(animeList) {
   });
 }
 
-// Eventos
+// ---------- EVENTOS DE BUSCA ----------
 searchIcon.addEventListener("click", () => {
   const query = searchInput.value.trim();
   if (query) fetchAnime(query);
@@ -128,11 +135,85 @@ searchInput.addEventListener("keypress", e => {
   }
 });
 
-// Fechar modal
-closeModal.onclick = () => {
-  modal.style.display = "none";
-};
+// ---------- MODAL ----------
+closeModal.onclick = () => { modal.style.display = "none"; };
+window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
 
-window.onclick = e => {
-  if (e.target === modal) modal.style.display = "none";
-};
+// ---------- MICROFONE ----------
+if (micBtn) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    micBtn.style.display = "none";
+    console.warn("Reconhecimento de voz não suportado neste navegador.");
+  } else {
+    let recognition = null;
+    let listening = false;
+
+    micBtn.addEventListener("click", () => {
+      if (!recognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = "pt-BR";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onstart = () => { listening = true; micBtn.classList.add("listening"); };
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          searchInput.value = transcript;
+          const query = searchInput.value.trim();
+          if (query) fetchAnime(query);
+        };
+        recognition.onerror = (event) => console.error("Erro no reconhecimento de voz:", event.error);
+        recognition.onend = () => { listening = false; micBtn.classList.remove("listening"); };
+      }
+
+      if (!listening) recognition.start();
+      else recognition.stop();
+    });
+  }
+}
+
+// ---------- PWA INSTALL ----------
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = "block";
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log("Instalação:", outcome);
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+});
+
+// ---------- SERVICE WORKER REGISTRATION ----------
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("✅ Service Worker registrado!"))
+      .catch(err => console.error("❌ Erro ao registrar SW:", err));
+  });
+}
+
+// ---------- FUNÇÃO DE NOTIFICAÇÃO PERSISTENTE ----------
+function showPersistentNotification(title, body) {
+  if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
+
+  Notification.requestPermission().then(permission => {
+    if (permission === "granted") {
+      navigator.serviceWorker.getRegistration().then(reg => {
+        if (reg) {
+          reg.showNotification(title, {
+            body: body,
+            icon: "assets/ichigo.jpg",
+            vibrate: [100, 50, 100]
+          });
+        }
+      });
+    }
+  });
+}

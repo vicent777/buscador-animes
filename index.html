@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buscador de Animes</title>
+
+  <!-- Estilos -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Manifesto do PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png" type="image/png">
+
 </head>
 
 <body>
@@ -16,10 +22,17 @@
     </h1>
     <div class="search-container">
       <input type="text" id="searchInput" placeholder="Digite o nome do anime..." />
-      <span class="search-icon">🔍</span>
+      <button class="search-icon">🔍</button>
+      <button id="mic">🎤</button>
     </div>
+
     <div id="filterContainer" class="filter-container hidden"></div>
   </header>
+
+  <!-- Botão de instalação PWA -->
+  <button id="installBtn" class="install-btn" style="display:none;">
+    💾 Instalar App
+  </button>
 
   <main>
     <div id="loader" class="loader hidden"></div>
@@ -39,7 +52,19 @@
     <div id="caption"></div>
   </div>
 
+  <!-- Scripts -->
   <script src="script.js"></script>
-</body>
 
+  <!-- Registro do Service Worker -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("sw.js")
+          .then(() => console.log("✅ Service Worker registrado com sucesso!"))
+          .catch((err) => console.error("❌ Erro ao registrar Service Worker:", err));
+      });
+    }
+  </script>
+</body>
 </html>
